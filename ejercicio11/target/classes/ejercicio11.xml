@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:imap="http://www.mulesoft.org/schema/mule/imap" xmlns:imaps="http://www.mulesoft.org/schema/mule/imaps" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/imap http://www.mulesoft.org/schema/mule/imap/current/mule-imap.xsd
+http://www.mulesoft.org/schema/mule/imaps http://www.mulesoft.org/schema/mule/imaps/current/mule-imaps.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+    <imaps:connector name="IMAP" mailboxFolder="MULA" validateConnections="true" checkFrequency="10000" doc:name="IMAP"/>
+    <file:connector name="File" writeToDirectory="C:\Users\salas\Documents\SOA\#[flowVars.From]\#[flowVars.Date]" autoDelete="true" streaming="true" validateConnections="true" doc:name="File"/>
+    <flow name="ejercicio11Flow">
+        <imaps:inbound-endpoint host="imap.gmail.com" port="993" connector-ref="IMAP" responseTimeout="10000" doc:name="IMAP"/>
+        <set-variable variableName="From" value="#[java.net.URLEncoder.encode(message.inboundProperties.From)]" doc:name="Variable"/>
+        <set-variable variableName="Date" value="#[java.net.URLEncoder.encode(message.inboundProperties.Date)]" doc:name="Variable"/>
+        <file:outbound-endpoint path="C:\Users\salas\Documents\SOA\" connector-ref="File" responseTimeout="10000" doc:name="File"/>
+        <logger message="#[payload]" level="INFO" doc:name="Logger"/>
+    </flow>
+</mule>
